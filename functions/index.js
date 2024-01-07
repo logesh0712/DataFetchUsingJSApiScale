@@ -118,6 +118,8 @@ app.get('/badaga/getProfiles', (req, res) => {
             
             // output area start:
             let response = [];
+            let inputForPrevFetch = null;
+            let inputForNextFetch = null;
             // Output area end;
             
             // Filter input area. Now from request. Later from db.
@@ -190,7 +192,11 @@ app.get('/badaga/getProfiles', (req, res) => {
                         const doc = querySnapShot.docs[i];
                         documentCount++;
                         nextKey = doc.id;
-
+                        if (inputForPrevFetch == null)
+                        {
+                            inputForPrevFetch = doc.id;
+                        }
+                        inputForNextFetch = doc.id;
                         // Filtering area starts
                         
 
@@ -290,7 +296,13 @@ app.get('/badaga/getProfiles', (req, res) => {
 
             }//for;
 
-            return res.status(200).send(response);
+            var fullResponse = {
+                "results" : response,
+                "inputForPrevFetch" :inputForPrevFetch,
+                "inputForNextFetch" :inputForNextFetch
+            };
+            return res.status(200).send(fullResponse);
+
         }
         catch(error)
         {
